@@ -2,7 +2,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/langchain-arcadedb?label=%20)](https://pypi.org/project/langchain-arcadedb/#history)
 [![PyPI - License](https://img.shields.io/pypi/l/langchain-arcadedb)](https://opensource.org/licenses/MIT)
-[![PyPI - Downloads](https://img.shields.io/pepy/dt/langchain-arcadedb)](https://pypistats.org/packages/langchain-arcadedb)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/langchain-arcadedb)](https://pypi.org/project/langchain-arcadedb/)
 
 This package contains the [LangChain](https://langchain.com) integration for
 [ArcadeDB](https://arcadedb.com), the multi-model database with native graph,
