@@ -195,13 +195,17 @@ class ArcadeDBGraph:
         rels_by_key: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(
             list
         )
-        for rel in all_rels:
-            key = (rel["source_type"], rel["rel_type"], rel["target_type"])
+        for rel_dict in all_rels:
+            key = (
+                rel_dict["source_type"],
+                rel_dict["rel_type"],
+                rel_dict["target_type"],
+            )
             rels_by_key[key].append(
                 {
-                    "source_id": rel["source_id"],
-                    "target_id": rel["target_id"],
-                    "properties": rel["properties"],
+                    "source_id": rel_dict["source_id"],
+                    "target_id": rel_dict["target_id"],
+                    "properties": rel_dict["properties"],
                 }
             )
 
