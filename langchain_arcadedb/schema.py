@@ -35,7 +35,7 @@ def _get_node_properties(
     driver: Driver, label: str, sample_size: int = 25
 ) -> list[dict[str, str]]:
     """Sample nodes of a given label and infer property names and types."""
-    query = f"MATCH (n:`{label}`) RETURN n LIMIT $limit"  # noqa: S608
+    query = f"MATCH (n:`{label}`) RETURN n LIMIT $limit"
     records, _, _ = driver.execute_query(query, {"limit": sample_size})
 
     props: dict[str, str] = {}
@@ -52,7 +52,7 @@ def _get_rel_properties(
     driver: Driver, rel_type: str, sample_size: int = 25
 ) -> list[dict[str, str]]:
     """Sample relationships of a given type and infer property names and types."""
-    query = f"MATCH ()-[r:`{rel_type}`]->() RETURN r LIMIT $limit"  # noqa: S608
+    query = f"MATCH ()-[r:`{rel_type}`]->() RETURN r LIMIT $limit"
     records, _, _ = driver.execute_query(query, {"limit": sample_size})
 
     props: dict[str, str] = {}
@@ -105,7 +105,7 @@ def get_structured_schema(
             "node_props": {"Person": [{"property": "name", "type": "STRING"}]},
             "rel_props": {"KNOWS": [...]},
             "relationships": [{"start": "Person", "type": "KNOWS", "end": "Person"}],
-            "metadata": {"constraint": [], "index": []}
+            "metadata": {"constraint": [], "index": []},
         }
 
     Args:
@@ -128,9 +128,7 @@ def get_structured_schema(
     rel_props: dict[str, list[dict[str, str]]] = {}
     for rel_type in rel_types:
         try:
-            rel_props[rel_type] = _get_rel_properties(
-                driver, rel_type, sample_size
-            )
+            rel_props[rel_type] = _get_rel_properties(driver, rel_type, sample_size)
         except Exception:
             logger.warning("Failed to get properties for rel type %s", rel_type)
 

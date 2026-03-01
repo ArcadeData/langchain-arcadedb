@@ -60,9 +60,7 @@ class ArcadeDBGraph:
     ) -> None:
         self._url = url or os.environ.get("ARCADEDB_URI", _DEFAULT_URI)
         self._username = username or os.environ.get("ARCADEDB_USERNAME", "root")
-        self._password = password or os.environ.get(
-            "ARCADEDB_PASSWORD", "playwithdata"
-        )
+        self._password = password or os.environ.get("ARCADEDB_PASSWORD", "playwithdata")
         self._database = database or os.environ.get("ARCADEDB_DATABASE", "")
         self._sample_size = sample_size
 
@@ -165,14 +163,16 @@ class ArcadeDBGraph:
         for doc in graph_documents:
             all_nodes.extend(doc.nodes)
             for rel in doc.relationships:
-                all_rels.append({
-                    "source_type": rel.source.type,
-                    "source_id": str(rel.source.id),
-                    "target_type": rel.target.type,
-                    "target_id": str(rel.target.id),
-                    "rel_type": rel.type,
-                    "properties": rel.properties,
-                })
+                all_rels.append(
+                    {
+                        "source_type": rel.source.type,
+                        "source_id": str(rel.source.id),
+                        "target_type": rel.target.type,
+                        "target_id": str(rel.target.id),
+                        "rel_type": rel.type,
+                        "properties": rel.properties,
+                    }
+                )
             if include_source and doc.source is not None:
                 sources.append((doc.source, doc.nodes))
 
@@ -185,27 +185,29 @@ class ArcadeDBGraph:
 
         for node_type, rows in nodes_by_type.items():
             cypher = (
-                f"UNWIND $rows AS row "  # noqa: S608
+                f"UNWIND $rows AS row "
                 f"MERGE (n:`{node_type}` {{id: row.id}}) "
                 f"SET n += row.properties"
             )
             self.query(cypher, {"rows": rows})
 
         # Merge relationships grouped by (source_type, rel_type, target_type)
-        rels_by_key: dict[
-            tuple[str, str, str], list[dict[str, Any]]
-        ] = defaultdict(list)
+        rels_by_key: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(
+            list
+        )
         for rel in all_rels:
             key = (rel["source_type"], rel["rel_type"], rel["target_type"])
-            rels_by_key[key].append({
-                "source_id": rel["source_id"],
-                "target_id": rel["target_id"],
-                "properties": rel["properties"],
-            })
+            rels_by_key[key].append(
+                {
+                    "source_id": rel["source_id"],
+                    "target_id": rel["target_id"],
+                    "properties": rel["properties"],
+                }
+            )
 
         for (src_type, rel_type, tgt_type), rows in rels_by_key.items():
             cypher = (
-                f"UNWIND $rows AS row "  # noqa: S608
+                f"UNWIND $rows AS row "
                 f"MATCH (a:`{src_type}` {{id: row.source_id}}) "
                 f"MATCH (b:`{tgt_type}` {{id: row.target_id}}) "
                 f"MERGE (a)-[r:`{rel_type}`]->(b) "
@@ -223,7 +225,7 @@ class ArcadeDBGraph:
                 )
                 for node in nodes:
                     cypher = (
-                        f"MATCH (d:Document {{content: $content}}) "  # noqa: S608
+                        f"MATCH (d:Document {{content: $content}}) "
                         f"MATCH (n:`{node.type}` {{id: $node_id}}) "
                         f"MERGE (n)-[:MENTIONED_IN]->(d)"
                     )
@@ -239,11 +241,11 @@ class ArcadeDBGraph:
     def __enter__(self) -> ArcadeDBGraph:
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         self.close()
 
     def __del__(self) -> None:
         try:
             self._driver.close()
-        except Exception:  # noqa: BLE001, S110
+        except Exception:
             pass

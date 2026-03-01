@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Union
+from typing import Any
 
 
 @dataclass
 class Node:
     """A graph node with an id, type label, and properties."""
 
-    id: Union[str, int]
+    id: str | int
     type: str = "Node"
     properties: dict[str, Any] = field(default_factory=dict)
 

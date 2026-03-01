@@ -2,9 +2,10 @@
 
 Requires a running ArcadeDB instance with Bolt enabled::
 
-    docker run --rm -p 2480:2480 -p 7687:7687 \\
-        -e JAVA_OPTS="-Darcadedb.server.plugins=Bolt:com.arcadedb.bolt.BoltProtocolPlugin" \\
-        -e arcadedb.server.rootPassword=playwithdata \\
+    docker run --rm -p 2480:2480 -p 7687:7687 \
+        -e JAVA_OPTS="-Darcadedb.server.plugins=\
+        Bolt:com.arcadedb.bolt.BoltProtocolPlugin" \
+        -e arcadedb.server.rootPassword=playwithdata \
         arcadedata/arcadedb:latest
 
 Then create a database::
@@ -35,14 +36,12 @@ def _can_connect() -> bool:
             database=ARCADEDB_DB,
         )
         g.close()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return False
     return True
 
 
-pytestmark = pytest.mark.skipif(
-    not _can_connect(), reason="ArcadeDB not available"
-)
+pytestmark = pytest.mark.skipif(not _can_connect(), reason="ArcadeDB not available")
 
 
 @pytest.fixture
@@ -56,12 +55,12 @@ def graph() -> ArcadeDBGraph:  # type: ignore[misc]
     )
     try:
         g.query("MATCH (n) DETACH DELETE n")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     yield g  # type: ignore[misc]
     try:
         g.query("MATCH (n) DETACH DELETE n")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     g.close()
 
@@ -135,15 +134,12 @@ def test_add_graph_documents(graph: ArcadeDBGraph) -> None:
     )
     graph.add_graph_documents([doc])
 
-    result = graph.query(
-        "MATCH (n:Person) RETURN n.name AS name ORDER BY name"
-    )
+    result = graph.query("MATCH (n:Person) RETURN n.name AS name ORDER BY name")
     names = [r["name"] for r in result]
     assert names == ["Alice", "Bob"]
 
     result = graph.query(
-        "MATCH (a:Person)-[r:KNOWS]->(b:Person) "
-        "RETURN a.name AS a, b.name AS b"
+        "MATCH (a:Person)-[r:KNOWS]->(b:Person) RETURN a.name AS a, b.name AS b"
     )
     assert len(result) == 1
     assert result[0]["a"] == "Alice"
@@ -158,7 +154,5 @@ def test_add_graph_documents_merge_idempotent(graph: ArcadeDBGraph) -> None:
     graph.add_graph_documents([doc])
     graph.add_graph_documents([doc])
 
-    result = graph.query(
-        "MATCH (n:Thing {id: 'x1'}) RETURN count(n) AS cnt"
-    )
+    result = graph.query("MATCH (n:Thing {id: 'x1'}) RETURN count(n) AS cnt")
     assert result[0]["cnt"] == 1

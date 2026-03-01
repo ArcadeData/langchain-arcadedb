@@ -43,7 +43,6 @@ test = [
     "freezegun>=1.2.2,<2.0.0",
     "syrupy>=4.0.2,<5.0.0",
     "langchain-core",
-    "langchain-tests",
 ]
 test_integration = []
 lint = ["ruff>=0.13.1,<0.14.0"]
@@ -78,10 +77,19 @@ ignore = [
     "TRY201",
     "ARG002",
     "N803",
+    "TC001",
     "TC002",
     "TC003",
     "TRY300",
     "N806",
+    "D107",
+    "PERF401",
+    "SIM105",
+    "S110",
+    "BLE001",
+    "D105",
+    "PYI034",
+    "PERF203",
 ]
 unfixable = ["B028"]
 
